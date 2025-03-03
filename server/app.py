@@ -16,6 +16,10 @@ model = tf.keras.models.load_model(model_path)
 
 class_labels = ['paper', 'rock', 'scissors']
 
+@app.route('/')
+def home():
+    return "Home"
+
 @app.route('/predict', methods=['POST'])
 def predict():
     if 'file' not in request.files:
