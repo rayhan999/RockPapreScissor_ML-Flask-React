@@ -7,7 +7,6 @@ import io
 import gc
 import os
 
-# Configure TensorFlow to use memory growth
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
     try:
@@ -47,20 +46,17 @@ def predict():
         return jsonify({'error': 'No file selected'}), 400
     
     try:
-        # Process image
         img = Image.open(io.BytesIO(file.read()))
         img = img.resize((224, 224))
-        img_array = np.array(img, dtype=np.float32)  # Use float32 instead of float64
+        img_array = np.array(img, dtype=np.float32)  
         img_array = np.expand_dims(img_array, axis=0)
         img_array /= 255.0
         
-        # Make prediction with reduced precision
-        with tf.device('/CPU:0'):  # Force CPU prediction to save memory
+        with tf.device('/CPU:0'):  
             predictions = model.predict(img_array, verbose=0)
         
         predicted_class = class_labels[np.argmax(predictions[0])]
         
-        # Manual garbage collection
         del img, img_array, predictions
         gc.collect()
         
@@ -70,7 +66,6 @@ def predict():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    # Set environment variable for Flask workers
     os.environ["FLASK_WORKERS"] = "1"
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
