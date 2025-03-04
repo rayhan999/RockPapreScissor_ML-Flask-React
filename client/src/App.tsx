@@ -27,7 +27,7 @@ const App: React.FC = () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await axios.post('https://rockpaprescissor-ml-flask-react.onrender.com/predict', formData, {
+      const response = await axios.post('https://sadek999-test.hf.space/predict', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
